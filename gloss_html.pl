@@ -6,8 +6,9 @@ use YAML qw{LoadFile};
 use Data::Dumper; sub D(@){warn Dumper(@_)};
 
 die "USEAGE: $0 yaml_file" unless @ARGV;
+sub ANCHOR($){ local $_ = $_[0]; s|\b([A-Z][A-Z ]*[A-Z])|<a href='$1' name='$1'>$1</a>|g; $_}
 
-my $data = LoadFile(shift @ARGV);
+my $data = { map{ANCHOR $_} %{ LoadFile(shift @ARGV) } };
 
 my $template = <<END;
 <!DOCTYPE html>
@@ -20,7 +21,7 @@ my $template = <<END;
 
 <dl>
 [% FOREACH key IN terms.keys.sort %]
-  <dt><a name='[%key%]'>[%key%]</a></dt>
+  <dt>[%key%]</dt>
     <dd>[%terms.\$key%]</dd>
 [% END %]
 
