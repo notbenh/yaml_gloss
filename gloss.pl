@@ -12,6 +12,6 @@ sub ANCHOR($){ local $_ = $_[0]; s|\b([A-Z][A-Z ]*[A-Z])|<a href='#$1' name='$1'
 
 my $data = { map{ANCHOR $_} %{ LoadFile(shift @ARGV) } };
 
-my $t = Template->new();
+my $t = Template->new({RELATIVE=>1});
 $t->process($template,{terms=>$data})
   || die $t->error(), "\n";
